@@ -1,6 +1,11 @@
 ﻿using Microsoft.Extensions.Primitives;
 using System.Text;
 
+// Steps:
+// 1. In cmder, run command 'ngrok http https://localhost:7247' without quotes
+// 2. Copy the forwarding URL from ngrok for WEBHOOK_DELIVERY_ADDRESS in .env file
+// 3. Run the WebhookServer first and then run the SetupWebhook
+
 var builder = WebApplication.CreateBuilder(args);
 var app = builder.Build();
 

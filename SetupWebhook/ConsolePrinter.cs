@@ -1,59 +1,53 @@
 ﻿namespace SetupWebhook;
 
 /// <summary>
-/// Utility class for printing styled messages to the console with emojis for better clarity.
+/// Utility class for printing styled messages to the console.
 /// </summary>
 public static class ConsolePrinter
 {
     /// <summary>
-    /// Prints a success message in green with a ✅ emoji.
+    /// Prints a success message in green with [SUC] level.
     /// </summary>
-    /// <param name="message">The message to display.</param>
     public static void Success(string message)
     {
-        Print($"✅ {message}", ConsoleColor.Green);
+        Print($"[SUC] {message}", ConsoleColor.Green);
     }
 
     /// <summary>
-    /// Prints an error message in red with a ❌ emoji.
+    /// Prints an error message in red with [ERR] level.
     /// </summary>
-    /// <param name="message">The error message to display.</param>
     public static void Error(string message)
     {
-        Print($"❌ {message}", ConsoleColor.Red);
+        Print($"[ERR] {message}", ConsoleColor.Red);
     }
 
     /// <summary>
-    /// Prints a warning message in yellow with a ⚠️ emoji.
+    /// Prints an informational message in cyan with [INF] level.
+    /// </summary>
+    public static void Info(string message)
+    {
+        Print($"[INF] {message}", ConsoleColor.Cyan);
+    }
+
+    /// <summary>
+    /// Prints a warning message in yellow with [WRN] level.
     /// </summary>
     public static void Warning(string message)
     {
-        Print($"⚠️ {message}", ConsoleColor.Yellow);
+        Print($"[WRN] {message}", ConsoleColor.Yellow);
     }
 
     /// <summary>
-    /// Prints an informational message in yellow with a ℹ️ emoji.
+    /// Prints a debug message with [DBG] level and no color.
     /// </summary>
-    /// <param name="message">The info message to display.</param>
-    public static void Info(string message)
-    {
-        Print($"ℹ️ {message}", ConsoleColor.Cyan);
-    }
-
-    /// <summary>
-    /// Prints a debug message with a 🐛 emoji and no color.
-    /// </summary>
-    /// <param name="message">The debug message to display.</param>
     public static void Debug(string message)
     {
-        Console.WriteLine($"🐛 {message}");
+        Console.WriteLine($"[DBG] {message}");
     }
 
     /// <summary>
     /// Prints a message in the specified console color.
     /// </summary>
-    /// <param name="message">The message to print.</param>
-    /// <param name="color">The console color to use.</param>
     private static void Print(string message, ConsoleColor color)
     {
         Console.ForegroundColor = color;

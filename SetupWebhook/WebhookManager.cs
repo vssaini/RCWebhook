@@ -89,7 +89,7 @@ public class WebhookManager(RestClient client, string? deliveryAddress)
         try
         {
             await client.Restapi().Subscription(subscriptionId).Delete();
-            ConsolePrinter.Info("Subscription " + subscriptionId + " deleted.");
+            ConsolePrinter.Success("Subscription " + subscriptionId + " deleted.");
         }
         catch (Exception ex)
         {
