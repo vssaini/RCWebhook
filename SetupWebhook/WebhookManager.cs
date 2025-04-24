@@ -17,6 +17,8 @@ public class WebhookManager(RestClient client, string? deliveryAddress)
     /// </summary>
     private const string VoiceMailFilter = "/restapi/v1.0/account/~/extension/~/voicemail";
 
+    private const string MessageFilter = "/restapi/v1.0/account/~/extension/~/message-store/instant?type=SMS";
+
     /// <summary>
     /// Subscribes to voicemail notification events using the configured delivery address.
     /// </summary>
@@ -24,7 +26,8 @@ public class WebhookManager(RestClient client, string? deliveryAddress)
     {
         try
         {
-            var request = BuildSubscriptionRequest();
+            var request = BuildSubscriptionRequestForVoiceMail();
+            //var request = BuildSubscriptionRequestForMessage();
             var response = await client.Restapi().Subscription().Post(request);
 
             ConsolePrinter.Success("Subscription Id: " + response.id);
@@ -40,7 +43,7 @@ public class WebhookManager(RestClient client, string? deliveryAddress)
     /// Builds a subscription request for voicemail notifications.
     /// </summary>
     /// <returns>A populated <see cref="CreateSubscriptionRequest"/> object.</returns>
-    private CreateSubscriptionRequest BuildSubscriptionRequest()
+    private CreateSubscriptionRequest BuildSubscriptionRequestForVoiceMail()
     {
         return new CreateSubscriptionRequest
         {
@@ -55,16 +58,61 @@ public class WebhookManager(RestClient client, string? deliveryAddress)
     }
 
     /// <summary>
-    /// Lists all current subscriptions and deletes them one by one.
+    /// Builds a subscription request for message notifications.
     /// </summary>
-    public async Task ReadAndDeleteAllSubscriptionsAsync()
+    /// <returns>A populated <see cref="CreateSubscriptionRequest"/> object.</returns>
+    // ReSharper disable once UnusedMember.Local
+    private CreateSubscriptionRequest BuildSubscriptionRequestForMessage()
+    {
+        return new CreateSubscriptionRequest
+        {
+            eventFilters = [MessageFilter],
+            deliveryMode = new NotificationDeliveryModeRequest
+            {
+                transportType = "WebHook",
+                address = deliveryAddress
+            },
+            expiresIn = 3600
+        };
+    }
+
+    /// <summary>
+    /// Fetch all subscriptions existing in RingCentral.
+    /// </summary>
+    /// <returns></returns>
+    public async Task FetchAllSubscriptionsAsync()
     {
         try
         {
             var response = await client.Restapi().Subscription().List();
             if (response.records.Length == 0)
             {
-                ConsolePrinter.Warning("No subscription.");
+                ConsolePrinter.Warning("No subscription exist in RingCentral.");
+                return;
+            }
+
+            foreach (var record in response.records)
+            {
+                ConsolePrinter.Debug(JsonSerializer.Serialize(record));
+            }
+        }
+        catch (Exception ex)
+        {
+            ConsolePrinter.Error("Failed to read subscriptions: " + ex.Message);
+        }
+    }
+
+    /// <summary>
+    /// Delete all subscriptions.
+    /// </summary>
+    public async Task DeleteAllSubscriptionsAsync()
+    {
+        try
+        {
+            var response = await client.Restapi().Subscription().List();
+            if (response.records.Length == 0)
+            {
+                ConsolePrinter.Warning("No subscription exist in RingCentral.");
                 return;
             }
 
@@ -76,7 +124,7 @@ public class WebhookManager(RestClient client, string? deliveryAddress)
         }
         catch (Exception ex)
         {
-            ConsolePrinter.Error("Failed to read subscriptions: " + ex.Message);
+            ConsolePrinter.Error("Failed to delete subscriptions: " + ex.Message);
         }
     }
 

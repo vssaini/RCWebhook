@@ -21,7 +21,9 @@ class Program
         }
 
         var manager = new WebhookManager(service.Client, service.DeliveryAddress);
-        await manager.SubscribeForNotificationAsync();
-        //await manager.ReadAndDeleteAllSubscriptionsAsync();
+
+        //await manager.SubscribeForNotificationAsync();
+        await manager.FetchAllSubscriptionsAsync();
+        //await manager.DeleteAllSubscriptionsAsync();
     }
 }
