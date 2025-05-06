@@ -25,7 +25,7 @@ public class RingCentralService
     /// <exception cref="Exception">Thrown when authorization fails.</exception>
     public async Task InitializeAsync()
     {
-        DeliveryAddress = Environment.GetEnvironmentVariable("WEBHOOK_DELIVERY_ADDRESS") + "/webhook";
+        DeliveryAddress = Environment.GetEnvironmentVariable("WEBHOOK_DELIVERY_ADDRESS");
         ConsolePrinter.Info("Webhook delivery address: " + DeliveryAddress);
 
         Client = new RestClient(
